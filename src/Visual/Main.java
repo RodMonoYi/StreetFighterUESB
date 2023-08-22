@@ -47,7 +47,7 @@ public class Main {
 
         JLabel personagem1 = new JLabel();
         //personagem1.setBorder(new LineBorder(Color.RED, 2));//Borda para ver o hitbox
-        personagem1.setIcon(new ImageIcon("Sprites Street Fighter\\Ryu\\Base\\1.png"));
+        personagem1.setIcon(new ImageIcon("C:\\Users\\Rodrigo\\Desktop\\Sprites Street Fighter\\Ryu\\Base\\1.png"));
         personagem1.setBounds(9, 192, spriteY, 260);
         placeHolder.add(personagem1);
         
