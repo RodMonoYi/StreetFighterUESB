@@ -21,6 +21,7 @@ public class Main {
         frame.setBounds(50, 50, 900, 500);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        frame.setResizable(false);
 
         JPanel placeHolder = new JPanel();
         placeHolder.setBounds(0, 0, 884, 461);
@@ -46,7 +47,7 @@ public class Main {
         placeHolder.add(lifePlayer1);
 
         JLabel personagem1 = new JLabel();
-        //personagem1.setBorder(new LineBorder(Color.RED, 2));//Borda para ver o hitbox
+        personagem1.setBorder(new LineBorder(Color.RED, 2));//Borda para ver o hitbox
         personagem1.setIcon(new ImageIcon("C:\\Users\\Rodrigo\\Desktop\\Sprites Street Fighter\\Ryu\\Base\\1.png"));
         personagem1.setBounds(9, 192, spriteY, 260);
         placeHolder.add(personagem1);
@@ -58,7 +59,7 @@ public class Main {
 
         final int[] posX1 = {10};
         final AnimationState animationState = new AnimationState();
-        final int delay = 75;
+        final int delay = 90;
 
         InputMap inputMap = personagem1.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = personagem1.getActionMap();
@@ -67,9 +68,14 @@ public class Main {
         actionMap.put("moveRightPressed", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 animationState.isMoving = true;
-                animationState.isWalkingBackward = false;
-                posX1[0] += 10;
+                animationState.isWalkingBackward
+                 = false;
                 personagem1.setBounds(posX1[0], spriteY, 186, 260);
+                posX1[0] += 10;
+                if (posX1[0] >= 690) {
+                	posX1[0] = 690;
+                }
+                
             }
         });
 
@@ -80,6 +86,9 @@ public class Main {
                 animationState.isWalkingBackward = true;
                 posX1[0] -= 10;
                 personagem1.setBounds(posX1[0], spriteY, 186, 260);
+                if (posX1[0] <= 10) {
+                	posX1[0] = 10;
+                }
             }
         });
 
@@ -96,19 +105,7 @@ public class Main {
             }
         });
 
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, false), "socoFracoPressed");
-        actionMap.put("socoFracoPressed", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                animationState.isSocoFraco = true;
-            }
-        });
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, true), "socoFracoReleased");
-        actionMap.put("socoFracoReleased", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                animationState.isSocoFraco = false;
-            }
-        });
+      
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "socoFracoPressed");
         actionMap.put("socoFracoPressed", new AbstractAction() {
@@ -120,7 +117,7 @@ public class Main {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), "socoFracoReleased");
         actionMap.put("socoFracoReleased", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                animationState.isSocoFraco = false;
+                
             }
         });
         
@@ -134,7 +131,7 @@ public class Main {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "chuteFracoReleased");
         actionMap.put("chuteFracoReleased", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                animationState.isChuteFraco = false;
+                
             }
         });
         
@@ -150,7 +147,6 @@ public class Main {
         actionMap.put("jumpReleased", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Espaço solto");
-                animationState.isJumping = false;
             }
         });
 
@@ -187,6 +183,9 @@ public class Main {
                         System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
                         System.out.println("spriteY = " + spriteY);
                         currentFrameJump++;
+                        if(currentFrameJump > 8) {
+                        	animationState.isJumping = false;
+                        }
                     } else {
                         animationState.isJumping = false; // Sair do estado de pulo
                         currentFrameJump = 1; // Reiniciar contador para o próximo pulo
@@ -212,6 +211,7 @@ public class Main {
                         String imagePath = "C:\\Users\\Rodrigo\\Desktop\\Sprites Street Fighter\\Ryu\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, 260);
                         personagem1.setIcon(new ImageIcon(imagePath));
+                        animationState.isSocoFraco = false;
                     }
                     currentFrameSocoFraco = (currentFrameSocoFraco % animationState.numSocoFracoFrames) + 1;
                 } else if (animationState.isChuteFraco) {
@@ -219,7 +219,11 @@ public class Main {
                     String imagePath = "C:\\Users\\Rodrigo\\Desktop\\Sprites Street Fighter\\Ryu\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
                     if (currentFrameChuteFraco == 3) {
                         personagem1.setBounds(posX1[0], spriteY, 317, 260);
+                    } else if(currentFrameChuteFraco == 5) {
+                    	animationState.isChuteFraco = false;
                     } else {
+                    	
+                    	//
                         personagem1.setBounds(posX1[0], spriteY, 186, 260);
                     }
                     personagem1.setIcon(new ImageIcon(imagePath));
