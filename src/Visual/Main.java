@@ -6,12 +6,16 @@ import java.awt.ComponentOrientation;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.border.LineBorder;
+import static javax.swing.JOptionPane.showMessageDialog;
+import java.awt.Font;
 
 public class Main {
     private static int spriteY = 192; // Altura padrão do sprite
     
     public static String direcaoA = "";
     public static String direcaoB = "";
+    public static int vida1 = 100;
+    public static int vida2 = 100;
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> criarEMostrarGUI());
@@ -33,8 +37,18 @@ public class Main {
         frame.getContentPane().add(placeHolder);
         placeHolder.setLayout(null);
 
+        
+
+        JProgressBar lifePlayer1 = new JProgressBar();
+        lifePlayer1.setBorder(new LineBorder(Color.YELLOW, 4));
+        lifePlayer1.setBackground(Color.BLUE);
+        lifePlayer1.setForeground(Color.GREEN);
+        lifePlayer1.setBounds(25, 11, 375, 30);
+        lifePlayer1.setValue(vida1);
+        placeHolder.add(lifePlayer1);
+        
         JProgressBar lifePlayer2 = new JProgressBar();
-        lifePlayer2.setValue(75);
+        lifePlayer2.setValue(vida2);
         lifePlayer2.setForeground(Color.GREEN);
         lifePlayer2.setBorder(new LineBorder(Color.YELLOW, 4));
         lifePlayer2.setBackground(Color.BLUE);
@@ -42,27 +56,31 @@ public class Main {
         lifePlayer2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         placeHolder.add(lifePlayer2);
 
-        JProgressBar lifePlayer1 = new JProgressBar();
-        lifePlayer1.setBorder(new LineBorder(Color.YELLOW, 4));
-        lifePlayer1.setBackground(Color.BLUE);
-        lifePlayer1.setForeground(Color.GREEN);
-        lifePlayer1.setBounds(25, 11, 375, 30);
-        lifePlayer1.setValue(90);
-        placeHolder.add(lifePlayer1);
-
         // JLabel do Ryu
         JLabel personagem1 = new JLabel();
-        personagem1.setBorder(new LineBorder(Color.RED, 2));// Borda para ver o hitbox
+        //personagem1.setBorder(new LineBorder(Color.RED, 2));// Borda para ver o hitbox
         personagem1.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ryu\\" + direcaoA + "\\Base\\1.png"));
         personagem1.setBounds(9, 192, spriteY, 260);
         placeHolder.add(personagem1);
 
         // JLabel do Ken
         JLabel personagem2 = new JLabel();
-        personagem2.setBorder(new LineBorder(Color.RED, 2));
+       // personagem2.setBorder(new LineBorder(Color.RED, 2));
         personagem2.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ken\\" + direcaoB +  "Base\\1.png"));
         personagem2.setBounds(650, 192, spriteY, 260);
         placeHolder.add(personagem2);       
+        
+        JLabel NomeRyu = new JLabel("");
+        NomeRyu.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ryu\\nome.png"));
+        NomeRyu.setFont(new Font("Tahoma", Font.PLAIN, 32));
+        NomeRyu.setBounds(20, 42, 119, 50);
+        placeHolder.add(NomeRyu);
+        
+        JLabel NomeKen = new JLabel("");
+        NomeKen.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ken\\nome.png"));
+        NomeKen.setFont(new Font("Tahoma", Font.PLAIN, 32));
+        NomeKen.setBounds(778, 42, 119, 50);
+        placeHolder.add(NomeKen);
         
         
 
@@ -82,7 +100,6 @@ public class Main {
         InputMap inputMap = personagem1.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = personagem1.getActionMap();
         
-        // Mapear comandos para personagem2 (Ken)
         InputMap inputMap2 = personagem2.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap2 = personagem2.getActionMap();
         
@@ -271,6 +288,53 @@ public class Main {
                  }else {
                  	// Mantém
                  }
+            	 
+            	if (animationState1.isSocoFraco || animationState1.isChuteFraco) {
+            		//System.out.println(direcaoA);
+            		if(direcaoA == "Direita") {
+            			if (posX1[0] + personagem1.getWidth() >= posX2[0] && posX1[0] <= posX2[0] + personagem2.getWidth()) {
+            				System.out.println("Ryu acertou Ken!");
+            				vida2 = vida2 -5;
+            				lifePlayer2.setValue(vida2);
+            			}	
+            		}
+            		else {
+            			if (posX1[0] <= posX2[0] + personagem1.getWidth()) {
+            				System.out.println("Ryu acertou Ken!");
+            				vida2 = vida2 -10;
+            				lifePlayer2.setValue(vida2);
+            			}	
+            		}
+        	    }
+            	
+            	if (vida1 <= 0) {
+            		showMessageDialog(null, "Ken Venceu!");
+            		vida1 = 100;
+            		vida2 = 100;
+            		personagem1.setBounds(posX1[0], 192, spriteY, 260);
+            		personagem2.setBounds(posX2[0], 192, spriteY, 260);
+            		frame.repaint();
+            		frame.revalidate();
+            		posX1[0] = 9;
+            		posX2[0] = 650;
+            		lifePlayer1.setValue(vida1);
+            		lifePlayer2.setValue(vida2);
+            		personagem2.setBounds(posX2[0], 192, spriteY, 260);
+            	}
+				if (vida2 <= 0) {
+					showMessageDialog(null, "Ryu Venceu!");
+					vida1 = 100;
+            		vida2 = 100;
+            		personagem1.setBounds(posX1[0], 192, spriteY, 260);
+            		personagem2.setBounds(posX2[0], 192, spriteY, 260);
+            		frame.repaint();
+            		frame.revalidate();
+            		posX1[0] = 9;
+            		posX2[0] = 650;
+            		lifePlayer1.setValue(vida1);
+            		lifePlayer2.setValue(vida2);
+            		personagem2.setBounds(posX2[0], 192, spriteY, 260);
+            	}
             	
                 if (animationState1.isMoving) {
                     if (animationState1.isWalkingBackward) {
@@ -283,14 +347,18 @@ public class Main {
                         personagem1.setIcon(new ImageIcon(imagePath));
                     }
                 } else if (animationState1.isJumping) {
+                	//
+                	//
+                	//
+                	//
                 	if (currentFrameJump <= animationState1.numJumpFrames) {
                         int spriteHeight = animationState1.getSpriteHeightForJump(currentFrameJump);
                         spriteY = animationState1.getSpriteYForPuloFrente(currentFrameJump);
                         String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\PuloFrente\\" + currentFrameJump + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, spriteHeight);
                         personagem1.setIcon(new ImageIcon(imagePath));
-                        System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
-                        System.out.println("spriteY = " + spriteY);
+                        //System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
+                        //System.out.println("spriteY = " + spriteY);
                         currentFrameJump++;
                         if(currentFrameJump > 8) {
                         	animationState1.isJumping = false;
@@ -300,11 +368,25 @@ public class Main {
                         currentFrameJump = 1; // Reiniciar contador para o próximo pulo
                         spriteY = 192; // Retornar à posição Y de 192
                     }
+                	//
+                	//
+                	//
+                	//
                 } else if (animationState1.isSocoFraco) {
+                	
+                	
                 	if (currentFrameSocoFraco == 2) {
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\SocoFraco\\" + currentFrameSocoFraco + ".png";
-                        personagem1.setBounds(posX1[0], spriteY, 258, 260);
-                        personagem1.setIcon(new ImageIcon(imagePath));
+                		if(direcaoA == "Direita") {
+                			String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                            personagem1.setBounds(posX1[0], spriteY, 258, 260);
+                            personagem1.setIcon(new ImageIcon(imagePath));
+                		}
+                		else {
+                			String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                            personagem1.setBounds(posX1[0] - 75, spriteY, 258, 260);
+                            personagem1.setIcon(new ImageIcon(imagePath));
+                		}
+                        
                     } else if (currentFrameSocoFraco == 3) {
                         String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, 260);
@@ -327,7 +409,13 @@ public class Main {
                     currentFrameChuteFraco = (currentFrameChuteFraco % animationState1.numChuteFracoFrames) + 1;
                     String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
                     if (currentFrameChuteFraco == 3) {
-                        personagem1.setBounds(posX1[0], spriteY, 317, 260);
+                    	if(direcaoA == "Direita") {
+                    		personagem1.setBounds(posX1[0], spriteY, 317, 260);
+                		}
+                		else {
+                			personagem1.setBounds(posX1[0] - 131, spriteY, 317, 260);
+                		}                   	
+
                     } else if(currentFrameChuteFraco == 5) {
                     	animationState1.isChuteFraco = false;
                     } else {
@@ -341,7 +429,7 @@ public class Main {
                 	currentFrameJump = 1;
                 	spriteY = 192;
                     personagem1.setBounds(coordenadaLocal, spriteY, 186, 260);//Obrigar o personagem a parar no chão e com a hitbox original (animação base)
-                    System.out.println("X = " + coordenadaLocal + " Y = " + spriteY); //186x260
+                    //System.out.println("X = " + coordenadaLocal + " Y = " + spriteY); //186x260
                 	
                     animationState1.baseFrame = (animationState1.baseFrame % animationState1.numBaseFrames) + 1;
                     String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\Base\\" + animationState1.baseFrame + ".png";
@@ -377,6 +465,33 @@ public class Main {
                  	// Mantém
                  }
             	
+            	 if (animationState2.isSocoFraco || animationState2.isChuteFraco) {
+             		//System.out.println(direcaoB);
+            		//System.out.println("X1 = " + posX1[0]);
+            		//System.out.println("X2 = " + posX2[0]);
+            		//System.out.println("Largura X1 = " + personagem1.getWidth());
+            		//System.out.println("X1 + Largura X1 = " + (posX1[0] + personagem1.getWidth()));
+             		if(direcaoB == "Esquerda") {
+             			if (posX2[0] <= posX1[0] + personagem1.getWidth() + 75) {
+             				System.out.println("Ken acertou Ryu!");
+             				if(currentFrameSocoFraco == 2) {
+             					vida1 = vida1 -5;
+             					lifePlayer1.setValue(vida1);
+             				}
+             				
+             			}	
+             		}
+             		else {
+             			if (posX2[0] + personagem2.getWidth() >= posX1[0] && posX2[0] <= posX1[0] + personagem1.getWidth()) {
+             				System.out.println("Ken acertou Ryu!");
+             				if(currentFrameChuteFraco == 3) {
+             					vida1 = vida1 -10;
+            				lifePlayer1.setValue(vida1);
+             				}
+             				
+             			}	
+             		}
+         	    }
             	
                 if (animationState2.isMoving) {
                     if (animationState2.isWalkingBackward) {
@@ -395,22 +510,31 @@ public class Main {
                         String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\PuloFrente\\" + currentFrameJump + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 186, spriteHeight);
                         personagem2.setIcon(new ImageIcon(imagePath));
-                        System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
-                        System.out.println("spriteY = " + spriteY);
+                        //System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
+                        //System.out.println("spriteY = " + spriteY);
                         currentFrameJump++;
                         if (currentFrameJump > 8) {
                             animationState2.isJumping = false;
                         }
                     } else {
+                    	//getSpriteYForPuloFrente1
                         animationState2.isJumping = false; // Sair do estado de pulo
                         currentFrameJump = 1; // Reiniciar contador para o próximo pulo
                         spriteY = 192; // Retornar à posição Y de 192
                     }
                 } else if (animationState2.isSocoFraco) {
                     if (currentFrameSocoFraco == 2) {
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
-                        personagem2.setBounds(posX2[0], spriteY, 258, 260);
-                        personagem2.setIcon(new ImageIcon(imagePath));
+                    	
+                    	if(direcaoB == "Direita") {
+                			String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB +"\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                            personagem2.setBounds(posX2[0], spriteY, 258, 260);
+                            personagem2.setIcon(new ImageIcon(imagePath));
+                		}
+                		else {
+                			String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB +"\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                            personagem2.setBounds(posX2[0] - 72, spriteY, 258, 260);
+                            personagem2.setIcon(new ImageIcon(imagePath));
+                		}
                     } else if (currentFrameSocoFraco == 3) {
                         String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 186, 260);
@@ -433,7 +557,12 @@ public class Main {
                     currentFrameChuteFraco = (currentFrameChuteFraco % animationState2.numChuteFracoFrames) + 1;
                     String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
                     if (currentFrameChuteFraco == 3) {
-                        personagem2.setBounds(posX2[0], spriteY, 317, 260);
+                    	if(direcaoB == "Direita") {
+                    		personagem2.setBounds(posX2[0], spriteY, 317, 260);
+                		}
+                		else {
+                			personagem2.setBounds(posX2[0] - 131, spriteY, 317, 260);
+                		}      
                     } else if (currentFrameChuteFraco == 5) {
                         animationState2.isChuteFraco = false;
                     } else {
@@ -445,7 +574,7 @@ public class Main {
                     currentFrameJump = 1;
                     spriteY = 192;
                     personagem2.setBounds(coordenadaLocal, spriteY, 186, 260);// Obrigar o personagem a parar no chão e com a hitbox original (animação base)
-                    System.out.println("X = " + coordenadaLocal + " Y = " + spriteY); // 186x260
+                    //System.out.println("X = " + coordenadaLocal + " Y = " + spriteY); // 186x260
 
                     animationState2.baseFrame = (animationState2.baseFrame % animationState2.numBaseFrames) + 1;
                     String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\Base\\" + animationState2.baseFrame + ".png";
@@ -524,14 +653,30 @@ public class Main {
 	        }
         }
 
-		public int getSpriteYForPuloFrente(int currentFrameJump) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getSpriteYForPuloFrente(int frame) {
+			switch (frame) {
+	            case 1: return 192;
+	            case 2: return 162;
+	            case 3: return 142;
+	            case 4: return 122;
+	            case 5: return 125;
+	            case 6: return 145;
+	            case 7: return 162;
+	            default: return 192; // Altura padrão 
+	        }
 		}
 
-		public int getSpriteYForPuloFrente2(int currentFrameJump) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getSpriteYForPuloFrente2(int frame) {
+			switch (frame) {
+	            case 1: return 192;
+	            case 2: return 162;
+	            case 3: return 142;
+	            case 4: return 122;
+	            case 5: return 125;
+	            case 6: return 145;
+	            case 7: return 162;
+	            default: return 192; // Altura padrão 
+	        }
 		}
     }
 
@@ -550,7 +695,7 @@ public class Main {
         boolean isJumping = false;
         int numJumpFrames = 6; // Número de frames para a animação de pulo
 
-        private int getSpriteHeightForJump(int frame) {
+        private int getSpriteHeightForJump(int frame) {//Tamanho altura do componente do personagem
             switch (frame) {
                 case 1:
                     return 260;
@@ -573,7 +718,7 @@ public class Main {
 
 
         
-        private int getSpriteYForPuloFrente1(int frame) {
+        private int getSpriteYForPuloFrente1(int frame) {//Posição do componento do personagem durante o pulo
             switch (frame) {
 	            case 1: return 192;
 	            case 2: return 162;
