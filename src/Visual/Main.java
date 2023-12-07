@@ -9,7 +9,10 @@ import javax.swing.border.LineBorder;
 
 public class Main {
     private static int spriteY = 192; // Altura padrão do sprite
-
+    
+    public static String direcaoA = "";
+    public static String direcaoB = "";
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> criarEMostrarGUI());
     }
@@ -50,14 +53,14 @@ public class Main {
         // JLabel do Ryu
         JLabel personagem1 = new JLabel();
         personagem1.setBorder(new LineBorder(Color.RED, 2));// Borda para ver o hitbox
-        personagem1.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ryu\\Base\\1.png"));
+        personagem1.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ryu\\" + direcaoA + "\\Base\\1.png"));
         personagem1.setBounds(9, 192, spriteY, 260);
         placeHolder.add(personagem1);
 
         // JLabel do Ken
         JLabel personagem2 = new JLabel();
         personagem2.setBorder(new LineBorder(Color.RED, 2));
-        personagem2.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ken\\Base\\1.png"));
+        personagem2.setIcon(new ImageIcon("src\\Sprites Street Fighter\\Ken\\" + direcaoB +  "Base\\1.png"));
         personagem2.setBounds(650, 192, spriteY, 260);
         placeHolder.add(personagem2);       
         
@@ -257,24 +260,33 @@ public class Main {
             int currentFrameChuteFraco = 1;
             int currentFramePuloFrente = 1;
             int currentFrameJump = 1;
-
+            
             while (true) {
+            	 if(posX1[0] > posX2[0]) {
+                 	direcaoA = "Esquerda";
+                 	direcaoB = "Direita";
+                 }else if(posX1[0] < posX2[0]){
+                 	direcaoA = "Direita";
+                 	direcaoB = "Esquerda";
+                 }else {
+                 	// Mantém
+                 }
             	
                 if (animationState1.isMoving) {
                     if (animationState1.isWalkingBackward) {
                         currentFrameBackward = (currentFrameBackward % animationState1.numFrames) + 1;
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\AndarEsquerda\\" + currentFrameBackward + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\AndarEsquerda\\" + currentFrameBackward + ".png";
                         personagem1.setIcon(new ImageIcon(imagePath));
                     } else {
                         currentFrameForward = (currentFrameForward % animationState1.numFrames) + 1;
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\AndarDireita\\" + currentFrameForward + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\AndarDireita\\" + currentFrameForward + ".png";
                         personagem1.setIcon(new ImageIcon(imagePath));
                     }
                 } else if (animationState1.isJumping) {
                 	if (currentFrameJump <= animationState1.numJumpFrames) {
                         int spriteHeight = animationState1.getSpriteHeightForJump(currentFrameJump);
                         spriteY = animationState1.getSpriteYForPuloFrente(currentFrameJump);
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\PuloFrente\\" + currentFrameJump + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\PuloFrente\\" + currentFrameJump + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, spriteHeight);
                         personagem1.setIcon(new ImageIcon(imagePath));
                         System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
@@ -290,22 +302,22 @@ public class Main {
                     }
                 } else if (animationState1.isSocoFraco) {
                 	if (currentFrameSocoFraco == 2) {
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA +"\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 258, 260);
                         personagem1.setIcon(new ImageIcon(imagePath));
                     } else if (currentFrameSocoFraco == 3) {
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, 260);
                         personagem1.setIcon(new ImageIcon(imagePath));
                     } else if (animationState1.isPuloFrente) {
                         currentFramePuloFrente = (currentFramePuloFrente % animationState1.numPuloFrenteFrames) + 1;
                         int spriteHeight = animationState1.getSpriteHeightForJump(currentFramePuloFrente);
                         System.out.println("Sprite Height for Frame " + currentFramePuloFrente + ": " + spriteHeight);
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\PuloFrente\\" + currentFramePuloFrente + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\" + direcaoA + "\\PuloFrente\\" + currentFramePuloFrente + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, spriteHeight);
                         personagem1.setIcon(new ImageIcon(imagePath));
                     } else {
-                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem1.setBounds(posX1[0], spriteY, 186, 260);
                         personagem1.setIcon(new ImageIcon(imagePath));
                         animationState1.isSocoFraco = false;
@@ -313,7 +325,7 @@ public class Main {
                     currentFrameSocoFraco = (currentFrameSocoFraco % animationState1.numSocoFracoFrames) + 1;
                 } else if (animationState1.isChuteFraco) {
                     currentFrameChuteFraco = (currentFrameChuteFraco % animationState1.numChuteFracoFrames) + 1;
-                    String imagePath = "src\\Sprites Street Fighter\\Ryu\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
+                    String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
                     if (currentFrameChuteFraco == 3) {
                         personagem1.setBounds(posX1[0], spriteY, 317, 260);
                     } else if(currentFrameChuteFraco == 5) {
@@ -332,7 +344,7 @@ public class Main {
                     System.out.println("X = " + coordenadaLocal + " Y = " + spriteY); //186x260
                 	
                     animationState1.baseFrame = (animationState1.baseFrame % animationState1.numBaseFrames) + 1;
-                    String imagePath = "src\\Sprites Street Fighter\\Ryu\\Base\\" + animationState1.baseFrame + ".png";
+                    String imagePath = "src\\Sprites Street Fighter\\Ryu\\"+ direcaoA + "\\Base\\" + animationState1.baseFrame + ".png";
                     personagem1.setIcon(new ImageIcon(imagePath));
                     
                 }
@@ -352,23 +364,35 @@ public class Main {
             int currentFrameChuteFraco = 1;
             int currentFramePuloFrente = 1;
             int currentFrameJump = 1;
-
+            
             while (true) {
+            	
+            	 if(posX1[0] > posX2[0]) {
+                 	direcaoA = "Direita";
+                 	direcaoA = "Esquerda";
+                 }else if(posX1[0] < posX2[0]){
+                 	direcaoA = "Esquerda";
+                 	direcaoA = "Direita";
+                 }else {
+                 	// Mantém
+                 }
+            	
+            	
                 if (animationState2.isMoving) {
                     if (animationState2.isWalkingBackward) {
                         currentFrameBackward = (currentFrameBackward % animationState2.numFrames) + 1;
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\AndarEsquerda\\" + currentFrameBackward + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB +"\\AndarEsquerda\\" + currentFrameBackward + ".png";
                         personagem2.setIcon(new ImageIcon(imagePath));
                     } else {
                         currentFrameForward = (currentFrameForward % animationState2.numFrames) + 1;
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\AndarDireita\\" + currentFrameForward + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\AndarDireita\\" + currentFrameForward + ".png";
                         personagem2.setIcon(new ImageIcon(imagePath));
                     }
                 } else if (animationState2.isJumping) {
                     if (currentFrameJump <= animationState2.numJumpFrames) {
                         int spriteHeight = animationState2.getSpriteHeightForJump(currentFrameJump);
                         spriteY = animationState2.getSpriteYForPuloFrente2(currentFrameJump);
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\PuloFrente\\" + currentFrameJump + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\PuloFrente\\" + currentFrameJump + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 186, spriteHeight);
                         personagem2.setIcon(new ImageIcon(imagePath));
                         System.out.println("Altura do pulo para o frame " + currentFrameJump + ": " + spriteHeight);
@@ -384,22 +408,22 @@ public class Main {
                     }
                 } else if (animationState2.isSocoFraco) {
                     if (currentFrameSocoFraco == 2) {
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 258, 260);
                         personagem2.setIcon(new ImageIcon(imagePath));
                     } else if (currentFrameSocoFraco == 3) {
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 186, 260);
                         personagem2.setIcon(new ImageIcon(imagePath));
                     } else if (animationState2.isPuloFrente) {
                         currentFramePuloFrente = (currentFramePuloFrente % animationState2.numPuloFrenteFrames) + 1;
                         int spriteHeight = animationState2.getSpriteHeightForJump(currentFramePuloFrente);
                         System.out.println("Sprite Height for Frame " + currentFramePuloFrente + ": " + spriteHeight);
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\PuloFrente\\" + currentFramePuloFrente + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\PuloFrente\\" + currentFramePuloFrente + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 186, spriteHeight);
                         personagem2.setIcon(new ImageIcon(imagePath));
                     } else {
-                        String imagePath = "src\\Sprites Street Fighter\\Ken\\SocoFraco\\" + currentFrameSocoFraco + ".png";
+                        String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\SocoFraco\\" + currentFrameSocoFraco + ".png";
                         personagem2.setBounds(posX2[0], spriteY, 186, 260);
                         personagem2.setIcon(new ImageIcon(imagePath));
                         animationState2.isSocoFraco = false;
@@ -407,7 +431,7 @@ public class Main {
                     currentFrameSocoFraco = (currentFrameSocoFraco % animationState2.numSocoFracoFrames) + 1;
                 } else if (animationState2.isChuteFraco) {
                     currentFrameChuteFraco = (currentFrameChuteFraco % animationState2.numChuteFracoFrames) + 1;
-                    String imagePath = "src\\Sprites Street Fighter\\Ken\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
+                    String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\ChuteFraco\\" + currentFrameChuteFraco + ".png";
                     if (currentFrameChuteFraco == 3) {
                         personagem2.setBounds(posX2[0], spriteY, 317, 260);
                     } else if (currentFrameChuteFraco == 5) {
@@ -424,7 +448,7 @@ public class Main {
                     System.out.println("X = " + coordenadaLocal + " Y = " + spriteY); // 186x260
 
                     animationState2.baseFrame = (animationState2.baseFrame % animationState2.numBaseFrames) + 1;
-                    String imagePath = "src\\Sprites Street Fighter\\Ken\\Base\\" + animationState2.baseFrame + ".png";
+                    String imagePath = "src\\Sprites Street Fighter\\Ken\\"+ direcaoB + "\\Base\\" + animationState2.baseFrame + ".png";
                     personagem2.setIcon(new ImageIcon(imagePath));
                 }
 
@@ -435,12 +459,43 @@ public class Main {
                 }
             }
         });
+        
         animationThread1.start();               
         animationThread2.start();
 
         frame.setVisible(true);
+        
+        if(posX1[0] > posX2[0]) {
+        	direcaoA = "Direita";
+        	direcaoA = "Esquerda";
+        }else if(posX1[0] < posX2[0]){
+        	direcaoA = "Esquerda";
+        	direcaoA = "Direita";
+        }else {
+        	// Mantém
+        }
+
     }
     
+    /*
+    private static void verificarPosicaoDosPersonagens(AnimationState animationThread1, AnimationState animationThread2) {
+        // Obtém as coordenadas X dos personagens
+        //int posX1 = animationThread1.getX();
+        //int posX2 = animationThread2.getX();
+
+        
+        if(pos > posX2[0])
+        
+        // Verifica qual personagem está mais à esquerda e à direita
+        if (posX1 < posX2) {
+            System.out.println("Ryu está mais à esquerda e Ken está mais à direita.");
+        } else if (posX1 > posX2) {
+            System.out.println("Ken está mais à esquerda e Ryu está mais à direita.");
+        } else {
+            System.out.println("Ryu e Ken estão na mesma posição horizontal.");
+        }
+    }
+    */
     private static class AnimationState {
         boolean isMoving = false;
         boolean isWalkingBackward = false;
@@ -541,11 +596,6 @@ public class Main {
 	            case 7: return 162;
 	            default: return 192; // Altura padrão 
             }
-        }
-
-
-        
+        }   
     }
-    
-   
 }
