@@ -293,9 +293,5 @@ public class Main {
 	            default: return 192; // Altura padrão 
             }
         }
-
-        
     }
-    
-   
 }
