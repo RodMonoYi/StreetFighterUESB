@@ -715,32 +715,5 @@ public class Main {
                     return 260; // Altura padrão
             }
         }
-
-
-        
-        private int getSpriteYForPuloFrente1(int frame) {//Posição do componento do personagem durante o pulo
-            switch (frame) {
-	            case 1: return 192;
-	            case 2: return 162;
-	            case 3: return 142;
-	            case 4: return 122;
-	            case 5: return 125;
-	            case 6: return 145;
-	            case 7: return 162;
-	            default: return 192; // Altura padrão 
-            }
-        }
-        private int getSpriteYForPuloFrente2(int frame) {
-            switch (frame) {
-	            case 1: return 192;
-	            case 2: return 162;
-	            case 3: return 142;
-	            case 4: return 122;
-	            case 5: return 125;
-	            case 6: return 145;
-	            case 7: return 162;
-	            default: return 192; // Altura padrão 
-            }
-        }   
     }
 }
